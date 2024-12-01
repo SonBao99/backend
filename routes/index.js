@@ -273,24 +273,6 @@ router.get('/quizzes/:id', async (req, res) => {
 
 // Create a new quiz with multiple questions
 // Create a new quiz
-router.post('/quizzes', requireLogin, async (req, res) => {
-    try {
-        const { title, description, category, questions } = req.body;
-
-        const quiz = new Quiz({
-            title,
-            description,
-            category,
-            questions
-        });
-
-        await quiz.save();
-        res.status(201).json(quiz);
-    } catch (err) {
-        console.error('Error creating quiz:', err);
-        res.status(400).json({ message: 'Error creating quiz' });
-    }
-});
 // Save quiz attempt
 router.post('/users/attempts', requireLogin, async (req, res) => {
     try {
