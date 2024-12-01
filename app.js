@@ -18,7 +18,7 @@ app.use(cors({
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error('CORS not allowed'));
         }
     },
     credentials: true,
@@ -26,10 +26,8 @@ app.use(cors({
     allowedHeaders: [
         'Content-Type', 
         'Authorization', 
-        'Access-Control-Allow-Credentials',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Methods',
-        'Access-Control-Allow-Origin'
+        'X-Requested-With',
+        'Access-Control-Allow-Credentials'
     ],
     exposedHeaders: ['Set-Cookie']
 }));
