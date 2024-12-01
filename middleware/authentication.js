@@ -6,31 +6,43 @@ module.exports.requireLogin = async (req, res, next) => {
     const token = req.cookies.auth;
     
     if (!token) {
-        return res.status(401).json({message: "error", code: "unauthenticated-access"});
+        console.log('No auth token found in cookies');
+        return res.status(401).json({
+            message: "error", 
+            code: "unauthenticated-access",
+            details: "No authentication token found"
+        });
     }
 
     try {
-        // Verify the token
         const decoded = jwt.verify(token, SECRET);
-        
-        // Find the user
         const user = await User.findById(decoded.payload);
         
         if (!user) {
-            return res.status(401).json({message: "error", code: "user-not-found"});
+            console.log('User not found for token:', decoded.payload);
+            return res.status(401).json({
+                message: "error", 
+                code: "user-not-found",
+                details: "User associated with token not found"
+            });
         }
 
-        // Attach user to the request object
         req.user = user;
-        
-        // Continue to the next middleware/route handler
         next();
     } catch (error) {
+        console.error('Authentication error:', error);
         if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({message: "error", code: "token-expired"});
+            return res.status(401).json({
+                message: "error", 
+                code: "token-expired",
+                details: "Authentication token has expired"
+            });
         }
         
-        console.log(error);
-        return res.status(401).json({message: "error", code: "invalid-token"});
+        return res.status(401).json({
+            message: "error", 
+            code: "invalid-token",
+            details: error.message
+        });
     }
 };

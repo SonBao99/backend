@@ -162,22 +162,28 @@ router.post("/users/login", async (req, res) => {
             });
         }
 
-        const maxAge = 3 * 24 * 60 * 60;
-        const token = createJwt(user._id, maxAge);
+        // Create token - remove maxAge parameter since it's already in createJwt
+        const token = createJwt(user._id);
+
+        // Set cookie with proper configuration
         res.cookie("auth", token, { 
             httpOnly: true, 
-            maxAge: maxAge * 1000,
+            maxAge: MAX_AGE * 1000,
             sameSite: 'none',
             secure: true,
-            path: '/',
-            domain: '.onrender.com'
+            path: '/'
         });
 
         const userResponse = user.toObject();
         delete userResponse.password;
 
-        return res.status(200).json({ message: "success", data: userResponse });
+        return res.status(200).json({ 
+            message: "success", 
+            data: userResponse,
+            token: token // Add token to response for debugging
+        });
     } catch (err) {
+        console.error('Login error:', err);
         return res.status(500).json({
             message: "failed",
             error: "server-error",
