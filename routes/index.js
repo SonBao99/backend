@@ -169,7 +169,8 @@ router.post("/users/login", async (req, res) => {
             maxAge: maxAge * 1000,
             sameSite: 'none',
             secure: true,
-            domain: '.onrender.com'  // Your Render domain
+            path: '/',
+            domain: process.env.COOKIE_DOMAIN
         });
 
         const userResponse = user.toObject();
@@ -225,8 +226,6 @@ router.get("/users", requireLogin, async (req, res) => {
 router.get('/quizzes', async (req, res) => {
     try {
         const quizzes = await Quiz.find();
-
-        // Calculate statistics for each quiz
         const quizzesWithStats = await Promise.all(quizzes.map(async (quiz) => {
             const stats = await quiz.calculateStats();
             const quizObj = quiz.toObject();
@@ -237,10 +236,16 @@ router.get('/quizzes', async (req, res) => {
             };
         }));
 
-        res.json(quizzesWithStats);
+        res.json({ 
+            message: "success",
+            data: quizzesWithStats 
+        });
     } catch (err) {
         console.error('Error fetching quizzes:', err);
-        res.status(500).json({ message: 'Error fetching quizzes' });
+        res.status(500).json({ 
+            message: "failed",
+            error: 'Error fetching quizzes' 
+        });
     }
 });
 
