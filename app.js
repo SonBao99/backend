@@ -8,21 +8,29 @@ const quizRoutes = require("./routes/index");
 const app = express();
 
 // middleware
-if (process.env.NODE_ENV === "development") {
-    app.use(cors({
-        origin: "http://localhost:8080",
-        credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'access-control-allow-credentials']
-    }));
-} else {
-    app.use(cors({
-        origin: "https://letsquiz-six.vercel.app",
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'access-control-allow-credentials'],
-        exposedHeaders: ['Set-Cookie']
-    }));
-}
+const allowedOrigins = [
+    'http://localhost:8080',
+    'https://letsquiz-six.vercel.app'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('CORS not allowed'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type', 
+        'Authorization', 
+        'X-Requested-With',
+        'Access-Control-Allow-Credentials'
+    ],
+    exposedHeaders: ['Set-Cookie']
+}));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
