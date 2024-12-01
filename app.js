@@ -11,7 +11,10 @@ const app = express();
 if (process.env.NODE_ENV === "development") {
     app.use(cors({origin: "http://localhost:8080", credentials: true}));
 } else {
-    app.use(cors());
+    app.use(cors({
+        origin: "https://letsquiz-six.vercel.app",
+        credentials: true
+    }));
 }
 app.use(morgan("dev"));
 app.use(express.json());
