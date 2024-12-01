@@ -170,7 +170,7 @@ router.post("/users/login", async (req, res) => {
             sameSite: 'none',
             secure: true,
             path: '/',
-            domain: process.env.COOKIE_DOMAIN
+            domain: '.onrender.com'
         });
 
         const userResponse = user.toObject();

@@ -11,14 +11,15 @@ const app = express();
 if (process.env.NODE_ENV === "development") {
     app.use(cors({
         origin: "http://localhost:8080",
-        credentials: true
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'access-control-allow-credentials']
     }));
 } else {
     app.use(cors({
-        origin: ["https://letsquiz-six.vercel.app"],
+        origin: "https://letsquiz-six.vercel.app",
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'access-control-allow-credentials'],
         exposedHeaders: ['Set-Cookie']
     }));
 }
